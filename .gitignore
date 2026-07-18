@@ -1,0 +1,3 @@
+node_modules/
+.durbin/
+npm-debug.log*
