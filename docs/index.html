@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>durbin — dictate to Claude Code from your phone</title>
+<meta name="description" content="Dictate to Claude Code from your phone and watch your dev server's live preview. One URL, from anywhere. Durbin (दूरबीन) is Nepali for telescope.">
+
+<!-- Open Graph / social -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="durbin — dictate to Claude Code from your phone">
+<meta property="og:description" content="Talk to Claude Code from your phone and watch your dev server's live preview update as it works. One token-gated URL, from anywhere. Free, open source, self-hosted.">
+<meta property="og:url" content="https://kharpann.github.io/durbin/">
+<meta property="og:image" content="https://kharpann.github.io/durbin/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="durbin — dictate to Claude Code from your phone">
+<meta name="twitter:description" content="Talk to Claude Code from your phone and watch your dev server's live preview update as it works. One URL, from anywhere.">
+<meta name="twitter:image" content="https://kharpann.github.io/durbin/og.png">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔭</text></svg>">
+
+<style>
+  :root {
+    --bg: #262624;
+    --bg-deep: #1f1e1d;
+    --bg-raise: #30302e;
+    --border: #3e3d3a;
+    --border-soft: #33322f;
+    --text: #faf9f5;
+    --muted: #a5a29a;
+    --faint: #87837b;
+    --accent: #d97757;
+    --accent-hot: #e5695c;
+    --green: #8eb572;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 1020px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- header ---------- */
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(31, 30, 29, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 24px; max-width: 1020px; margin: 0 auto;
+  }
+  .brand { font-family: var(--serif); font-size: 1.25rem; color: var(--text); font-weight: 600; }
+  .brand span { color: var(--accent); }
+  .nav-links { display: flex; gap: 22px; align-items: center; font-size: 0.92rem; }
+  .nav-links a { color: var(--muted); }
+  .nav-links a:hover { color: var(--text); text-decoration: none; }
+  .gh-btn {
+    border: 1px solid var(--border); border-radius: 8px; padding: 6px 14px;
+    color: var(--text) !important; background: var(--bg-raise);
+  }
+  .gh-btn:hover { border-color: var(--accent); }
+
+  /* ---------- hero ---------- */
+  .hero { padding: 84px 0 40px; text-align: center; }
+  .scope { font-size: 3.2rem; line-height: 1; margin-bottom: 18px; display: inline-block; }
+  h1 {
+    font-family: var(--serif); font-weight: 600;
+    font-size: clamp(2.4rem, 6vw, 3.6rem); line-height: 1.12;
+    letter-spacing: -0.01em; max-width: 800px; margin: 0 auto;
+  }
+  h1 em { font-style: normal; color: var(--accent); }
+  .sub {
+    color: var(--muted); font-size: clamp(1.05rem, 2.4vw, 1.25rem);
+    max-width: 640px; margin: 22px auto 0;
+  }
+  .etym { color: var(--faint); font-size: 0.95rem; margin-top: 14px; font-style: italic; }
+  .cta-row { display: flex; gap: 14px; justify-content: center; margin-top: 34px; flex-wrap: wrap; }
+  .install {
+    font-family: var(--mono); font-size: 1rem;
+    background: var(--bg-deep); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 20px; color: var(--text);
+    display: inline-flex; align-items: center; gap: 10px; cursor: pointer;
+  }
+  .install .dollar { color: var(--accent); user-select: none; }
+  .install .copied { color: var(--green); font-size: 0.8rem; display: none; }
+  .cta {
+    display: inline-flex; align-items: center; border-radius: 10px; padding: 12px 24px;
+    font-weight: 600; font-size: 1rem;
+    background: var(--accent); color: #1f1e1d !important;
+  }
+  .cta:hover { background: var(--accent-hot); text-decoration: none; }
+
+  /* ---------- phone mock ---------- */
+  .stage { padding: 56px 0 30px; display: flex; justify-content: center; }
+  .phone {
+    width: min(380px, 92vw); background: var(--bg-deep);
+    border: 1px solid var(--border); border-radius: 34px;
+    padding: 14px 12px 18px; box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+  }
+  .phone-top {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 10px 12px; border-bottom: 1px solid var(--border-soft);
+  }
+  .tabs { display: flex; gap: 6px; }
+  .tab {
+    font-size: 0.78rem; padding: 4px 12px; border-radius: 99px;
+    color: var(--muted); border: 1px solid transparent;
+  }
+  .tab.on { background: var(--bg-raise); color: var(--text); border-color: var(--border); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+  .chat { padding: 14px 6px 6px; display: flex; flex-direction: column; gap: 12px; font-size: 0.86rem; }
+  .msg-user {
+    align-self: flex-end; max-width: 85%;
+    background: var(--bg-raise); border: 1px solid var(--border);
+    border-radius: 16px 16px 4px 16px; padding: 9px 14px;
+  }
+  .msg-user .mic { color: var(--accent); margin-right: 6px; }
+  .msg-claude { align-self: flex-start; max-width: 92%; color: var(--muted); padding: 2px 6px; }
+  .msg-claude b { color: var(--text); font-weight: 600; }
+  .card {
+    align-self: stretch; background: var(--bg-raise);
+    border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    border-radius: 12px; padding: 11px 14px;
+  }
+  .card .q { font-size: 0.85rem; margin-bottom: 9px; }
+  .card .btns { display: flex; gap: 8px; }
+  .card .b {
+    font-size: 0.78rem; padding: 5px 14px; border-radius: 8px; cursor: default;
+    background: var(--accent); color: var(--bg-deep); font-weight: 600;
+  }
+  .card .b.ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+  .composer {
+    margin-top: 14px; display: flex; align-items: center; gap: 10px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 18px; padding: 10px 14px; font-size: 0.85rem; color: var(--faint);
+  }
+  .composer .plus { color: var(--muted); font-size: 1.1rem; }
+  .composer .mode { margin-left: auto; color: var(--accent); font-size: 0.78rem; white-space: nowrap; }
+
+  /* ---------- sections ---------- */
+  section { padding: 70px 0; }
+  section.alt { background: var(--bg-deep); border-top: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft); }
+  h2 {
+    font-family: var(--serif); font-weight: 600;
+    font-size: clamp(1.7rem, 4vw, 2.3rem); letter-spacing: -0.01em;
+    text-align: center; margin-bottom: 12px;
+  }
+  .lede { text-align: center; color: var(--muted); max-width: 620px; margin: 0 auto 46px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+  .feat {
+    background: var(--bg-raise); border: 1px solid var(--border-soft);
+    border-radius: 14px; padding: 22px;
+  }
+  section.alt .feat { background: var(--bg); }
+  .feat .ico { font-size: 1.5rem; }
+  .feat h3 { font-size: 1.05rem; margin: 10px 0 6px; font-weight: 600; }
+  .feat p { color: var(--muted); font-size: 0.92rem; }
+
+  /* ---------- how it works ---------- */
+  .flow {
+    display: flex; align-items: stretch; justify-content: center; gap: 0;
+    flex-wrap: wrap; margin-top: 8px;
+  }
+  .node {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px 22px; text-align: center; min-width: 200px; flex: 1;
+    max-width: 270px;
+  }
+  .node .t { font-weight: 600; }
+  .node .d { color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+  .arrow {
+    display: flex; align-items: center; padding: 0 16px;
+    color: var(--accent); font-size: 1.3rem;
+  }
+  .arrow small { color: var(--faint); font-size: 0.72rem; margin-top: 2px; }
+  .split { display: flex; flex-direction: column; gap: 10px; justify-content: center; }
+
+  /* ---------- steps ---------- */
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+  .step {
+    background: var(--bg-raise); border: 1px solid var(--border-soft);
+    border-radius: 14px; padding: 24px;
+  }
+  .step .n {
+    font-family: var(--serif); color: var(--accent); font-size: 1.6rem; font-weight: 600;
+  }
+  .step h3 { font-size: 1.05rem; margin: 8px 0 8px; }
+  .step p { color: var(--muted); font-size: 0.92rem; }
+  .step code, .feat code, td code {
+    font-family: var(--mono); font-size: 0.84em;
+    background: var(--bg-deep); border: 1px solid var(--border-soft);
+    border-radius: 6px; padding: 2px 7px; white-space: nowrap;
+  }
+
+  /* ---------- modes ---------- */
+  .modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+  .mode-card {
+    border: 1px solid var(--border-soft); border-radius: 14px; padding: 18px 20px;
+    background: var(--bg);
+  }
+  .mode-card .name { font-weight: 600; color: var(--accent); }
+  .mode-card p { color: var(--muted); font-size: 0.88rem; margin-top: 6px; }
+
+  /* ---------- table ---------- */
+  .tbl-scroll { overflow-x: auto; border: 1px solid var(--border-soft); border-radius: 14px; }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.92rem; }
+  th, td { padding: 12px 18px; text-align: left; border-bottom: 1px solid var(--border-soft); }
+  th { background: var(--bg-raise); font-weight: 600; }
+  td:nth-child(2), td:nth-child(3), th:nth-child(2), th:nth-child(3) { text-align: center; }
+  tr:last-child td { border-bottom: none; }
+  .yes { color: var(--green); } .no { color: var(--faint); }
+
+  /* ---------- footer ---------- */
+  footer {
+    border-top: 1px solid var(--border-soft); padding: 44px 0 60px;
+    text-align: center; color: var(--faint); font-size: 0.9rem;
+  }
+  footer .brand { font-size: 1.1rem; display: block; margin-bottom: 10px; }
+  footer a { color: var(--muted); }
+
+  @media (max-width: 720px) {
+    .nav-links a:not(.gh-btn) { display: none; }
+    .arrow { transform: rotate(90deg); padding: 8px 0; }
+    .flow { flex-direction: column; align-items: center; }
+    .node { max-width: 100%; width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="brand">🔭 <span>durbin</span></div>
+    <nav class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#setup">Setup</a>
+      <a class="gh-btn" href="https://github.com/PragyanSubedi/durbin">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero wrap">
+  <div class="scope">🔭</div>
+  <h1>Dictate to Claude Code <em>from your phone</em>, and watch your app update live.</h1>
+  <p class="sub">Durbin runs next to your project and gives you one token-gated URL: talk to Claude Code on one tab, see your dev server's live preview on the other — hot reload included, from anywhere.</p>
+  <p class="etym">Durbin (दूरबीन) is Nepali for telescope: see and steer your project from far away.</p>
+  <div class="cta-row">
+    <button class="install" onclick="navigator.clipboard.writeText('npm install -g durbin');this.querySelector('.copied').style.display='inline';setTimeout(()=>this.querySelector('.copied').style.display='none',1500)">
+      <span class="dollar">$</span> npm install -g durbin <span class="copied">copied!</span>
+    </button>
+    <a class="cta" href="https://github.com/PragyanSubedi/durbin">View on GitHub</a>
+  </div>
+
+  <div class="stage">
+    <div class="phone" aria-hidden="true">
+      <div class="phone-top">
+        <div class="tabs">
+          <div class="tab on">Agent</div>
+          <div class="tab">Preview</div>
+        </div>
+        <div class="dot" title="dev server up"></div>
+      </div>
+      <div class="chat">
+        <div class="msg-user"><span class="mic">🎙</span>Make the pricing cards stack on mobile and bump the CTA contrast</div>
+        <div class="msg-claude">Restructured the pricing grid to a single column under 640px and switched the CTA to the accent color — <b>check the preview tab</b>, it's already reloaded.</div>
+        <div class="card">
+          <div class="q">Claude wants to run <code>npm run build</code> — allow?</div>
+          <div class="btns"><div class="b">Allow</div><div class="b ghost">Deny</div></div>
+        </div>
+        <div class="composer"><span class="plus">＋</span> Dictate or type…<span class="mode">⚡ Auto</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="features">
+  <div class="wrap">
+    <h2>Built for the moments you're away from the monitor</h2>
+    <p class="lede">Resting your eyes, on the couch, in a café while your workstation runs at home. Pair it with any voice keyboard and development becomes a conversation with a live preview.</p>
+    <div class="grid">
+      <div class="feat"><div class="ico">🎙️</div><h3>Voice-first agent chat</h3><p>A mobile-first page where you type or dictate what Claude Code should do. Claude runs on your machine, in your repo, and its output streams back token by token.</p></div>
+      <div class="feat"><div class="ico">👁️</div><h3>Live preview, same URL</h3><p>Everything that isn't the agent page reverse-proxies to your local dev server — websockets and hot reload included. Watch the site change as Claude edits your files.</p></div>
+      <div class="feat"><div class="ico">🃏</div><h3>Interactive permission cards</h3><p>When Claude needs a permission or asks a clarifying question, the run pauses and a card appears with buttons to answer. Nothing is silently auto-approved beyond the mode you picked.</p></div>
+      <div class="feat"><div class="ico">📸</div><h3>Send screenshots</h3><p>Attach photos from your phone and Claude sees them: mark up a design, circle a bug, or screenshot the preview itself.</p></div>
+      <div class="feat"><div class="ico">🔔</div><h3>Push notifications</h3><p>Get notified when Claude finishes or is waiting on your answer — even with the phone locked. Stop runs mid-flight; queued messages dispatch in order.</p></div>
+      <div class="feat"><div class="ico">📱</div><h3>Installable web app</h3><p>Scan the printed QR code, add it to your home screen, and you get a fullscreen app with no browser chrome. No app store, no Claude login on the phone.</p></div>
+      <div class="feat"><div class="ico">🗂️</div><h3>Multiple sessions</h3><p>Messages continue one Claude session so context carries over. Archive, switch between, or delete sessions — each keeps its own context and scrollback.</p></div>
+      <div class="feat"><div class="ico">🔒</div><h3>Self-hosted &amp; token-gated</h3><p>Runs on your computer, rides HTTPS through your own Tailscale Funnel, listens only on localhost. Token or scrypt-hashed password auth. MIT licensed.</p></div>
+      <div class="feat"><div class="ico">🧰</div><h3>Zero framework lock-in</h3><p>The proxy works with anything that serves HTTP on a port — Next.js, Vite, Rails, whatever. Tap the port number on your phone to switch dev servers live.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <h2>How it works</h2>
+    <p class="lede">One bridge process, two jobs. Your phone never talks to Claude's servers directly — everything runs on your machine, in your repo, with your existing Claude Code plan.</p>
+    <div class="flow">
+      <div class="node"><div class="t">📱 Your phone</div><div class="d">any browser, just a link</div></div>
+      <div class="arrow"><div>→<br><small>https · Tailscale Funnel</small></div></div>
+      <div class="node"><div class="t">🔭 durbin bridge</div><div class="d">on your computer, port 8787</div></div>
+      <div class="arrow"><div>→</div></div>
+      <div class="split">
+        <div class="node"><div class="t">🤖 <code>/__agent</code></div><div class="d">Claude Code via the official Claude Agent SDK</div></div>
+        <div class="node"><div class="t">⚡ everything else</div><div class="d">reverse proxy to your dev server, HMR proxied</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <h2>Permission modes, per message</h2>
+    <p class="lede">The mode button in the composer maps onto Claude Code's permission modes and applies per message — plan one task, auto-run the next, in the same conversation. Clarifying questions always reach you.</p>
+    <div class="modes">
+      <div class="mode-card"><div class="name">✋ Manual</div><p>Every tool call — file edits included — pauses the run and asks on your phone.</p></div>
+      <div class="mode-card"><div class="name">📝 Plan</div><p>Claude explores but touches nothing, then proposes a plan as a card. "Build it" approves; "Keep planning" sends feedback.</p></div>
+      <div class="mode-card"><div class="name">✏️ Edits <small style="color:var(--faint)">(default)</small></div><p>File edits auto-approved so work flows; shell commands and everything else still ask first.</p></div>
+      <div class="mode-card"><div class="name">⚡ Auto</div><p>Everything runs without asking — builds, git, installs, the lot.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="setup">
+  <div class="wrap">
+    <h2>Set up in three steps</h2>
+    <p class="lede">Two one-time prerequisites: Node 20+ with a <a href="https://claude.com/claude-code">Claude Code</a> login, and <a href="https://tailscale.com/download">Tailscale</a> — that's what gives you a stable HTTPS URL from anywhere, for free, with no server to run.</p>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3>Install once</h3><p><code>npm install -g durbin</code></p></div>
+      <div class="step"><div class="n">2</div><h3>Run in any project</h3><p><code>cd your-project</code> then <code>durbin</code>. It starts the bridge, turns on Tailscale Funnel by itself, and prints a QR code with the login token baked in.</p></div>
+      <div class="step"><div class="n">3</div><h3>Scan with your phone</h3><p>Open the QR with your camera, bookmark it, add to home screen. The token sets a year-long cookie — you never type the URL again.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <h2>durbin vs. Claude Code Remote Control</h2>
+    <p class="lede">Claude Code's official <a href="https://code.claude.com/docs/en/remote-control">Remote Control</a> also drives a local session from your phone. They compose nicely — here's where they differ.</p>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th></th><th>🔭 durbin</th><th>Remote Control</th></tr></thead>
+        <tbody>
+          <tr><td>Claude runs on your machine, in your repo</td><td class="yes">✅</td><td class="yes">✅</td></tr>
+          <tr><td>Live preview of your dev server, hot reload included</td><td class="yes">✅</td><td class="no">❌</td></tr>
+          <tr><td>Agent and preview share one URL</td><td class="yes">✅</td><td class="no">❌</td></tr>
+          <tr><td>Works in any browser with just a link — no Claude login on the phone</td><td class="yes">✅</td><td class="no">❌</td></tr>
+          <tr><td>Always-on: runs as a service, nothing to keep alive or re-pair</td><td class="yes">✅</td><td class="no">❌</td></tr>
+          <tr><td>One-tap dev server restart after a reboot</td><td class="yes">✅</td><td class="no">❌</td></tr>
+          <tr><td>Open source, self-hosted, you own the transport</td><td class="yes">✅</td><td class="no">❌</td></tr>
+          <tr><td>Polished native app experience</td><td class="no">❌</td><td class="yes">✅</td></tr>
+          <tr><td>Official Anthropic support</td><td class="no">❌</td><td class="yes">✅</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section style="text-align:center;">
+  <div class="wrap">
+    <h2>See your project from far away.</h2>
+    <p class="lede" style="margin-bottom:30px;">Free, open source, MIT licensed. Your machine, your repo, your tunnel.</p>
+    <div class="cta-row">
+      <button class="install" onclick="navigator.clipboard.writeText('npm install -g durbin');this.querySelector('.copied').style.display='inline';setTimeout(()=>this.querySelector('.copied').style.display='none',1500)">
+        <span class="dollar">$</span> npm install -g durbin <span class="copied">copied!</span>
+      </button>
+      <a class="cta" href="https://github.com/PragyanSubedi/durbin">Star on GitHub</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="brand">🔭 <span style="color:var(--accent)">durbin</span></span>
+  <p>MIT License · <a href="https://github.com/PragyanSubedi/durbin">GitHub</a> · Built on the <a href="https://code.claude.com/docs/en/agent-sdk/overview">Claude Agent SDK</a> &amp; <a href="https://tailscale.com/kb/1223/funnel">Tailscale Funnel</a></p>
+</footer>
+
+</body>
+</html>
