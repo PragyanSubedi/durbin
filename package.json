@@ -1,0 +1,39 @@
+{
+  "name": "durbin",
+  "version": "0.1.1",
+  "description": "Dictate to Claude Code from your phone and watch your dev server's live preview. One URL, from anywhere.",
+  "type": "module",
+  "bin": {
+    "durbin": "bin/durbin.mjs"
+  },
+  "files": [
+    "bin"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "remote-development",
+    "mobile",
+    "voice",
+    "dictation",
+    "dev-server",
+    "preview",
+    "tailscale"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PragyanSubedi/durbin.git"
+  },
+  "homepage": "https://github.com/PragyanSubedi/durbin#readme",
+  "bugs": {
+    "url": "https://github.com/PragyanSubedi/durbin/issues"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.3.214",
+    "qrcode-terminal": "^0.12.0"
+  }
+}

@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>durbin · dictate to Claude Code from your phone</title>
+<meta name="description" content="Dictate to Claude Code from your phone and watch your dev server's live preview. One URL, from anywhere. Durbin (दूरबीन) is Nepali for telescope.">
+
+<!-- Open Graph / social -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="durbin · dictate to Claude Code from your phone">
+<meta property="og:description" content="Talk to Claude Code from your phone and watch your dev server's live preview update as it works. One token-gated URL, from anywhere. Free, open source, self-hosted.">
+<meta property="og:url" content="https://pragyansubedi.github.io/durbin/">
+<meta property="og:image" content="https://pragyansubedi.github.io/durbin/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="durbin · dictate to Claude Code from your phone">
+<meta name="twitter:description" content="Talk to Claude Code from your phone and watch your dev server's live preview update as it works. One URL, from anywhere.">
+<meta name="twitter:image" content="https://pragyansubedi.github.io/durbin/og.png">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔭</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@500,600,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;650&display=swap" rel="stylesheet">
+
+<script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog && window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="Ji Yi init fn mn Ur pn bn cn capture calculateEventProperties Sn register register_once register_for_session unregister unregister_for_session Tn getFeatureFlag getFeatureFlagPayload getFeatureFlagResult getAllFeatureFlags isFeatureEnabled reloadFeatureFlags updateFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync Mn identify setPersonProperties unsetPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset shutdown setIdentity clearIdentity get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException addExceptionStep captureLog startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty Cn xn createPersonProfile setInternalOrTestUser In hn Pn opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing debug Vr Rt getPageViewId captureTraceFeedback captureTraceMetric an".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_x5CbQWHEV59vSeAspusRkaLwhuJCvDrGZ7L36hEBgebH', {
+        api_host: 'https://us.i.posthog.com',
+        defaults: '2026-05-30',
+        person_profiles: 'identified_only', // or 'always' to create profiles for anonymous users as well
+    })
+</script>
+
+<style>
+  :root {
+    --bg: #262624;
+    --bg-deep: #1f1e1d;
+    --bg-deeper: #191817;
+    --bg-raise: #30302e;
+    --border: #3e3d3a;
+    --border-soft: #33322f;
+    --text: #faf9f5;
+    --muted: #a5a29a;
+    --faint: #87837b;
+    --accent: #d97757;
+    --accent-hot: #e5695c;
+    --accent-soft: rgba(217, 119, 87, 0.14);
+    --accent-glow: rgba(217, 119, 87, 0.28);
+    --green: #8eb572;
+    --display: "General Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    --radius: 16px;
+    --shadow-card: 0 1px 2px rgba(0,0,0,0.25);
+    --shadow-pop: 0 24px 70px rgba(0,0,0,0.5);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--accent); color: var(--bg-deep); }
+  a { color: var(--accent); text-decoration: none; transition: color 0.15s ease; }
+  a:hover { color: var(--accent-hot); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- reveal on scroll (only when JS is active) ---------- */
+  .js .rv { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+  .js .rv.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .js .rv, .rv { opacity: 1; transform: none; transition: none; }
+    .hero-anim { animation: none !important; opacity: 1 !important; }
+    * { animation-duration: 0.001s !important; }
+  }
+
+  /* ---------- header ---------- */
+  header {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(25, 24, 23, 0.72);
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    border-bottom: 1px solid rgba(62, 61, 58, 0.6);
+  }
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 24px; max-width: 1040px; margin: 0 auto;
+  }
+  .brand {
+    font-family: var(--display); font-size: 1.3rem; font-weight: 600;
+    display: flex; align-items: center; gap: 9px; color: var(--text);
+  }
+  .brand span { color: var(--accent); }
+  .nav-links { display: flex; gap: 26px; align-items: center; font-size: 0.92rem; }
+  .nav-links a { color: var(--muted); }
+  .nav-links a:hover { color: var(--text); }
+  .gh-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--border); border-radius: 10px; padding: 7px 15px;
+    color: var(--text) !important; background: var(--bg-raise);
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+  }
+  .gh-btn:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .gh-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative; padding: 96px 0 30px; text-align: center;
+    isolation: isolate;
+  }
+  .hero::before {
+    content: ""; position: absolute; inset: -180px -20vw 0; z-index: -1;
+    background:
+      radial-gradient(52vw 480px at 50% -8%, var(--accent-glow), transparent 68%),
+      radial-gradient(30vw 340px at 82% 12%, rgba(142, 181, 114, 0.07), transparent 70%);
+    pointer-events: none;
+  }
+  .hero-anim { opacity: 0; animation: rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+  .d1 { animation-delay: 0.05s; } .d2 { animation-delay: 0.16s; }
+  .d3 { animation-delay: 0.28s; } .d4 { animation-delay: 0.4s; } .d5 { animation-delay: 0.52s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-size: 0.8rem; letter-spacing: 0.09em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600;
+    background: var(--accent-soft); border: 1px solid rgba(217, 119, 87, 0.28);
+    border-radius: 99px; padding: 7px 16px; margin-bottom: 26px;
+  }
+  h1 {
+    font-family: var(--display); font-weight: 600;
+    font-size: clamp(2.5rem, 6.2vw, 3.9rem); line-height: 1.1;
+    letter-spacing: -0.015em; max-width: 820px; margin: 0 auto;
+    text-wrap: balance;
+  }
+  h1 em {
+    font-style: normal;
+    background: linear-gradient(100deg, var(--accent) 10%, #e8a184 90%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .sub {
+    color: var(--muted); font-size: clamp(1.05rem, 2.4vw, 1.22rem);
+    max-width: 660px; margin: 24px auto 0; text-wrap: pretty;
+  }
+  .etym { color: var(--faint); font-size: 0.95rem; margin-top: 16px; font-style: italic; }
+  .cta-row { display: flex; gap: 14px; justify-content: center; margin-top: 38px; flex-wrap: wrap; }
+  .install {
+    font-family: var(--mono); font-size: 0.98rem;
+    background: var(--bg-deeper); border: 1px solid var(--border);
+    border-radius: 12px; padding: 13px 22px; color: var(--text);
+    display: inline-flex; align-items: center; gap: 11px; cursor: pointer;
+    transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .install:hover { border-color: var(--accent); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0,0,0,0.35); }
+  .install .dollar { color: var(--accent); user-select: none; }
+  .install .copied { color: var(--green); font-size: 0.8rem; font-family: var(--sans); display: none; }
+  .cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    border-radius: 12px; padding: 13px 26px;
+    font-weight: 650; font-size: 1rem;
+    background: linear-gradient(180deg, var(--accent-hot), var(--accent));
+    color: var(--bg-deep) !important;
+    box-shadow: 0 8px 26px rgba(217, 119, 87, 0.28), inset 0 1px 0 rgba(255,255,255,0.22);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+  }
+  .cta:hover { transform: translateY(-2px); filter: brightness(1.06); box-shadow: 0 12px 34px rgba(217, 119, 87, 0.38), inset 0 1px 0 rgba(255,255,255,0.22); }
+
+  /* ---------- phone mock ---------- */
+  .stage { position: relative; padding: 64px 0 26px; display: flex; justify-content: center; }
+  .stage::after {
+    content: ""; position: absolute; left: 50%; bottom: 46px; transform: translateX(-50%);
+    width: min(480px, 80vw); height: 90px; z-index: -1;
+    background: radial-gradient(closest-side, var(--accent-glow), transparent);
+    filter: blur(10px);
+  }
+  .phone {
+    width: min(390px, 92vw); background: linear-gradient(180deg, #232221, var(--bg-deep));
+    border: 1px solid var(--border); border-radius: 38px;
+    padding: 15px 13px 19px; box-shadow: var(--shadow-pop), inset 0 1px 0 rgba(255,255,255,0.05);
+    text-align: left;
+  }
+  .phone-top {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 10px 13px; border-bottom: 1px solid var(--border-soft);
+  }
+  .tabs { display: flex; gap: 6px; }
+  .tab {
+    font-size: 0.78rem; padding: 5px 14px; border-radius: 99px;
+    color: var(--muted); border: 1px solid transparent;
+  }
+  .tab { cursor: pointer; background: none; font-family: inherit; transition: color 0.15s ease, background 0.15s ease; }
+  .tab:hover { color: var(--text); }
+  .tab.on { background: var(--bg-raise); color: var(--text); border-color: var(--border); }
+  .tab.nudge { color: var(--accent); border-color: rgba(217, 119, 87, 0.55); animation: nudge 1.4s ease infinite; }
+  @keyframes nudge {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(217, 119, 87, 0.35); }
+    50% { box-shadow: 0 0 0 5px rgba(217, 119, 87, 0); }
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); animation: pulse 2.4s ease infinite; }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(142, 181, 114, 0.45); }
+    50% { box-shadow: 0 0 0 6px rgba(142, 181, 114, 0); }
+  }
+  .chat {
+    padding: 15px 6px 6px; display: flex; flex-direction: column; gap: 13px;
+    font-size: 0.87rem; line-height: 1.55;
+    height: 420px; overflow-y: auto; scrollbar-width: none;
+  }
+  .chat::-webkit-scrollbar { display: none; }
+  .msg-user {
+    align-self: flex-end; max-width: 86%;
+    background: var(--bg-raise); border: 1px solid var(--border);
+    border-radius: 18px 18px 5px 18px; padding: 10px 15px;
+    box-shadow: var(--shadow-card);
+  }
+  .msg-user .mic { color: var(--accent); margin-right: 6px; }
+  .msg-claude { align-self: flex-start; max-width: 93%; color: var(--muted); padding: 2px 6px; }
+  .msg-claude b { color: var(--text); font-weight: 600; }
+  .pcard {
+    align-self: stretch; background: var(--bg-raise);
+    border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    border-radius: 13px; padding: 12px 15px; box-shadow: var(--shadow-card);
+  }
+  .pcard .q { font-size: 0.85rem; margin-bottom: 10px; }
+  .pcard .btns { display: flex; gap: 8px; }
+  .pcard .b {
+    font-size: 0.78rem; padding: 6px 16px; border-radius: 9px; cursor: pointer;
+    background: linear-gradient(180deg, var(--accent-hot), var(--accent));
+    color: var(--bg-deep); font-weight: 650; border: none; font-family: inherit;
+    transition: filter 0.15s ease, transform 0.15s ease;
+  }
+  .pcard .b:hover { filter: brightness(1.08); transform: translateY(-1px); }
+  .pcard .b.ghost { background: none; color: var(--muted); border: 1px solid var(--border); }
+  .pcard .b.ghost:hover { color: var(--text); filter: none; }
+  .receipt { color: var(--faint); font-size: 0.8rem; padding: 0 6px; font-family: var(--mono); }
+  .receipt.ok { color: var(--green); }
+  .typing { display: inline-flex; gap: 5px; padding: 8px 10px; align-self: flex-start; }
+  .typing i {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--faint);
+    animation: tdot 1s ease infinite;
+  }
+  .typing i:nth-child(2) { animation-delay: 0.15s; }
+  .typing i:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes tdot { 0%, 100% { opacity: 0.3; transform: none; } 50% { opacity: 1; transform: translateY(-3px); } }
+  .composer {
+    margin-top: 15px; display: flex; align-items: center; gap: 10px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 20px; padding: 11px 15px; font-size: 0.85rem; color: var(--faint);
+    transition: border-color 0.15s ease;
+  }
+  .composer:focus-within { border-color: rgba(217, 119, 87, 0.55); }
+  .composer .plus { color: var(--muted); font-size: 1.1rem; }
+  .composer input {
+    flex: 1; min-width: 0; background: none; border: none; outline: none;
+    color: var(--text); font-family: inherit; font-size: 0.85rem; caret-color: var(--accent);
+  }
+  .composer input::placeholder { color: var(--faint); }
+  .composer .mode { margin-left: auto; color: var(--accent); font-size: 0.78rem; white-space: nowrap; }
+  .composer .send {
+    background: none; border: none; color: var(--accent); font-size: 1rem; cursor: pointer;
+    padding: 0 2px; font-family: inherit;
+  }
+
+  /* ---------- mini preview tab ---------- */
+  .preview-view { display: none; padding: 12px 6px 6px; }
+  .preview-view.on { display: block; }
+  .agent-view.off { display: none; }
+  .pv-bar {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 0.72rem; color: var(--faint);
+    background: var(--bg); border: 1px solid var(--border-soft);
+    border-radius: 10px; padding: 7px 12px; margin-bottom: 12px;
+  }
+  .pv-bar .pv-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+  .pv-page {
+    background: #faf9f5; color: #262624; border-radius: 12px;
+    padding: 18px 16px; min-height: 415px;
+  }
+  .pv-h { font-family: var(--display); font-weight: 650; font-size: 1.05rem; margin-bottom: 3px; }
+  .pv-sub { font-size: 0.72rem; color: #6f6c66; margin-bottom: 13px; }
+  .pv-card {
+    border: 1px solid #e4e1d9; border-radius: 10px; padding: 11px 13px; margin-bottom: 9px;
+    background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    animation: pvin 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .pv-card:nth-child(4) { animation-delay: 0.08s; }
+  .pv-card:nth-child(5) { animation-delay: 0.16s; }
+  @keyframes pvin { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .pv-name { font-weight: 650; font-size: 0.82rem; }
+  .pv-price { font-size: 0.72rem; color: #6f6c66; margin: 2px 0 8px; }
+  .pv-btn {
+    display: inline-block; font-size: 0.72rem; font-weight: 650;
+    background: var(--accent); color: #fff; border-radius: 7px; padding: 5px 12px;
+  }
+  .pv-btn.lite { background: #f0ede5; color: #262624; }
+  .pv-badge {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 0.68rem;
+    font-family: var(--mono); color: var(--green); margin-top: 4px;
+  }
+  code {
+    font-family: var(--mono); font-size: 0.85em;
+    background: var(--bg-deeper); border: 1px solid var(--border-soft);
+    border-radius: 6px; padding: 2px 7px; white-space: nowrap;
+  }
+
+  /* ---------- sections ---------- */
+  section { padding: 88px 0; position: relative; }
+  section.alt {
+    background: linear-gradient(180deg, var(--bg-deep), var(--bg-deeper) 50%, var(--bg-deep));
+    border-top: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft);
+  }
+  .sec-eyebrow {
+    display: block; text-align: center;
+    font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); font-weight: 650; margin-bottom: 14px;
+  }
+  h2 {
+    font-family: var(--display); font-weight: 600;
+    font-size: clamp(1.8rem, 4vw, 2.5rem); letter-spacing: -0.015em; line-height: 1.2;
+    text-align: center; margin-bottom: 14px; text-wrap: balance;
+  }
+  .lede { text-align: center; color: var(--muted); max-width: 640px; margin: 0 auto 52px; text-wrap: pretty; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(285px, 1fr)); gap: 18px; }
+  .feat {
+    position: relative; overflow: hidden;
+    background: var(--bg-raise); border: 1px solid var(--border-soft);
+    border-radius: var(--radius); padding: 26px 24px;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  section.alt .feat { background: var(--bg); }
+  .feat:hover { transform: translateY(-4px); border-color: rgba(217, 119, 87, 0.45); box-shadow: 0 14px 40px rgba(0,0,0,0.35); }
+  .feat::after {
+    content: ""; position: absolute; inset: 0 0 auto; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0; transition: opacity 0.2s ease;
+  }
+  .feat:hover::after { opacity: 1; }
+  .feat .ico {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 46px; height: 46px; font-size: 1.35rem;
+    background: var(--accent-soft); border: 1px solid rgba(217, 119, 87, 0.25);
+    border-radius: 13px;
+  }
+  .feat h3 { font-size: 1.06rem; margin: 14px 0 7px; font-weight: 650; letter-spacing: -0.01em; }
+  .feat p { color: var(--muted); font-size: 0.93rem; }
+
+  /* ---------- how it works ---------- */
+  .flow { display: flex; align-items: stretch; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
+  .node {
+    background: var(--bg-raise); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 24px; text-align: center;
+    min-width: 200px; flex: 1; max-width: 280px; box-shadow: var(--shadow-card);
+  }
+  section.alt .node { background: var(--bg); }
+  .node .t { font-weight: 650; }
+  .node .d { color: var(--muted); font-size: 0.86rem; margin-top: 5px; }
+  .arrow { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 18px; color: var(--accent); font-size: 1.35rem; }
+  .arrow small { color: var(--faint); font-size: 0.72rem; margin-top: 2px; white-space: nowrap; }
+  .flow-split { display: flex; flex-direction: column; gap: 12px; justify-content: center; }
+
+  /* ---------- desktop screenshot ---------- */
+  .shot {
+    position: relative; border-radius: var(--radius); padding: 10px;
+    background: linear-gradient(180deg, #2b2a28, var(--bg-deep));
+    border: 1px solid var(--border); box-shadow: var(--shadow-pop);
+  }
+  .shot img { display: block; width: 100%; height: auto; border-radius: 9px; border: 1px solid var(--border-soft); }
+  .shot::after {
+    content: ""; position: absolute; inset: 0; border-radius: var(--radius);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); pointer-events: none;
+  }
+
+  /* ---------- modes ---------- */
+  .modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(225px, 1fr)); gap: 16px; }
+  .mode-card {
+    border: 1px solid var(--border-soft); border-radius: var(--radius); padding: 20px 22px;
+    background: var(--bg);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .mode-card:hover { transform: translateY(-3px); border-color: rgba(217, 119, 87, 0.4); }
+  .mode-card .name { font-weight: 650; color: var(--accent); }
+  .mode-card .name small { color: var(--faint); font-weight: 400; }
+  .mode-card p { color: var(--muted); font-size: 0.89rem; margin-top: 7px; }
+
+  /* ---------- steps ---------- */
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(265px, 1fr)); gap: 18px; counter-reset: step; }
+  .step {
+    background: var(--bg-raise); border: 1px solid var(--border-soft);
+    border-radius: var(--radius); padding: 26px;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .step:hover { transform: translateY(-3px); border-color: rgba(217, 119, 87, 0.4); }
+  .step .n {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; border-radius: 12px;
+    font-family: var(--display); color: var(--accent); font-size: 1.25rem; font-weight: 600;
+    background: var(--accent-soft); border: 1px solid rgba(217, 119, 87, 0.25);
+  }
+  .step h3 { font-size: 1.06rem; margin: 13px 0 8px; font-weight: 650; }
+  .step p { color: var(--muted); font-size: 0.93rem; }
+
+  /* ---------- table ---------- */
+  .tbl-scroll { overflow-x: auto; border: 1px solid var(--border-soft); border-radius: var(--radius); box-shadow: var(--shadow-card); }
+  table { border-collapse: collapse; width: 100%; min-width: 580px; font-size: 0.93rem; }
+  th, td { padding: 13px 20px; text-align: left; border-bottom: 1px solid var(--border-soft); }
+  th { background: var(--bg-raise); font-weight: 650; font-size: 0.88rem; letter-spacing: 0.02em; }
+  tbody tr { background: var(--bg-deep); transition: background 0.12s ease; }
+  tbody tr:nth-child(even) { background: var(--bg-deeper); }
+  tbody tr:hover { background: var(--bg-raise); }
+  td:nth-child(2), td:nth-child(3), th:nth-child(2), th:nth-child(3) { text-align: center; }
+  tr:last-child td { border-bottom: none; }
+  .yes { color: var(--green); } .no { color: var(--faint); }
+
+  /* ---------- closing ---------- */
+  .closing { text-align: center; }
+  .closing::before {
+    content: ""; position: absolute; inset: auto -20vw -140px; height: 420px; z-index: -1;
+    background: radial-gradient(46vw 320px at 50% 100%, var(--accent-glow), transparent 70%);
+    pointer-events: none;
+  }
+
+  /* ---------- footer ---------- */
+  footer {
+    border-top: 1px solid var(--border-soft); padding: 46px 0 62px;
+    text-align: center; color: var(--faint); font-size: 0.9rem;
+    background: var(--bg-deeper);
+  }
+  footer .brand { justify-content: center; margin-bottom: 10px; font-size: 1.15rem; }
+  footer a { color: var(--muted); }
+  footer a:hover { color: var(--text); }
+
+  @media (max-width: 720px) {
+    .nav-links a:not(.gh-btn) { display: none; }
+    .arrow { transform: rotate(90deg); padding: 10px 0; }
+    .arrow small { transform: rotate(-90deg); display: none; }
+    .flow { flex-direction: column; align-items: center; gap: 2px; }
+    .node { max-width: 100%; width: 100%; }
+    section { padding: 66px 0; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="brand">🔭 <span>durbin</span></div>
+    <nav class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#setup">Setup</a>
+      <a class="gh-btn" href="https://github.com/PragyanSubedi/durbin"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.42 7.42 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero wrap">
+  <div class="eyebrow hero-anim d1">🔭 Open source · MIT licensed</div>
+  <h1 class="hero-anim d2">Dictate to Claude Code <em>from your phone</em>, and watch your app update live.</h1>
+  <p class="sub hero-anim d3">Durbin runs next to your project and gives you one token-gated URL: talk to Claude Code on one tab, see your dev server's live preview on the other. Hot reload included, from anywhere.</p>
+  <p class="etym hero-anim d3">Durbin (दूरबीन) is Nepali for telescope: see and steer your project from far away.</p>
+  <div class="cta-row hero-anim d4">
+    <button class="install" onclick="navigator.clipboard.writeText('npm install -g durbin');this.querySelector('.copied').style.display='inline';setTimeout(()=>this.querySelector('.copied').style.display='none',1500)">
+      <span class="dollar">$</span> npm install -g durbin <span class="copied">copied!</span>
+    </button>
+    <a class="cta" href="https://github.com/PragyanSubedi/durbin">View on GitHub</a>
+  </div>
+
+  <div class="stage hero-anim d5">
+    <div class="phone">
+      <div class="phone-top">
+        <div class="tabs">
+          <button class="tab on" id="tabAgent" type="button">Agent</button>
+          <button class="tab" id="tabPreview" type="button">Preview</button>
+        </div>
+        <div class="dot" title="dev server up"></div>
+      </div>
+      <div class="agent-view" id="agentView">
+        <div class="chat" id="chat">
+          <div class="msg-user"><span class="mic">🎙</span>Make the pricing cards stack on mobile and bump the CTA contrast</div>
+          <div class="msg-claude">Restructured the pricing grid to a single column under 640px and switched the CTA to the accent color. <b>Check the preview tab</b>, it's already reloaded.</div>
+          <div class="pcard" id="pcard">
+            <div class="q">Claude wants to run <code>npm run build</code>. Allow?</div>
+            <div class="btns">
+              <button class="b" id="btnAllow" type="button">Allow</button>
+              <button class="b ghost" id="btnDeny" type="button">Deny</button>
+            </div>
+          </div>
+        </div>
+        <form class="composer" id="composer" autocomplete="off">
+          <span class="plus">＋</span>
+          <input id="say" type="text" placeholder="Dictate or type… (try it)" maxlength="120">
+          <button class="send" type="submit" aria-label="Send">↑</button>
+          <span class="mode">⚡ Auto</span>
+        </form>
+      </div>
+      <div class="preview-view" id="previewView">
+        <div class="pv-bar"><span class="pv-dot"></span> localhost:3000 · hot reload <span style="margin-left:auto">durbin proxy</span></div>
+        <div class="pv-page">
+          <div class="pv-h">Pricing</div>
+          <div class="pv-sub">Simple plans, cancel anytime. Now stacked on mobile.</div>
+          <div class="pv-card"><div class="pv-name">Starter</div><div class="pv-price">$0 / month</div><span class="pv-btn lite">Choose</span></div>
+          <div class="pv-card"><div class="pv-name">Pro</div><div class="pv-price">$12 / month</div><span class="pv-btn">Choose</span></div>
+          <div class="pv-card"><div class="pv-name">Team</div><div class="pv-price">$39 / month</div><span class="pv-btn lite">Choose</span></div>
+          <div class="pv-badge">✓ hot reloaded just now</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="features">
+  <div class="wrap">
+    <span class="sec-eyebrow rv">Features</span>
+    <h2 class="rv">Built for the moments you're away from the monitor</h2>
+    <p class="lede rv">Resting your eyes, on the couch, in a café while your workstation runs at home. Pair it with any voice keyboard and development becomes a conversation with a live preview.</p>
+    <div class="grid">
+      <div class="feat rv"><div class="ico">🎙️</div><h3>Voice-first agent chat</h3><p>A mobile-first page where you type or dictate what Claude Code should do. Claude runs on your machine, in your repo, and its output streams back token by token.</p></div>
+      <div class="feat rv"><div class="ico">👁️</div><h3>Live preview, same URL</h3><p>Everything that isn't the agent page reverse-proxies to your local dev server, websockets and hot reload included. Watch the site change as Claude edits your files.</p></div>
+      <div class="feat rv"><div class="ico">🃏</div><h3>Interactive permission cards</h3><p>When Claude needs a permission or asks a clarifying question, the run pauses and a card appears with buttons to answer. Nothing is silently auto-approved beyond the mode you picked.</p></div>
+      <div class="feat rv"><div class="ico">📸</div><h3>Send screenshots</h3><p>Attach photos from your phone and Claude sees them: mark up a design, circle a bug, or screenshot the preview itself.</p></div>
+      <div class="feat rv"><div class="ico">🔔</div><h3>Push notifications</h3><p>Get notified when Claude finishes or is waiting on your answer, even with the phone locked. Stop runs mid-flight; queued messages dispatch in order.</p></div>
+      <div class="feat rv"><div class="ico">📱</div><h3>Installable web app</h3><p>Scan the printed QR code, add it to your home screen, and you get a fullscreen app with no browser chrome. No app store, no Claude login on the phone.</p></div>
+      <div class="feat rv"><div class="ico">🗂️</div><h3>Multiple sessions</h3><p>Messages continue one Claude session so context carries over. Archive, switch between, or delete sessions; each keeps its own context and scrollback.</p></div>
+      <div class="feat rv"><div class="ico">🔒</div><h3>Self-hosted &amp; token-gated</h3><p>Runs on your computer, rides HTTPS through your own Tailscale Funnel, listens only on localhost. Token or scrypt-hashed password auth. MIT licensed.</p></div>
+      <div class="feat rv"><div class="ico">🧰</div><h3>Zero framework lock-in</h3><p>The proxy works with anything that serves HTTP on a port: Next.js, Vite, Rails, whatever. Tap the port number on your phone to switch dev servers live.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <span class="sec-eyebrow rv">Architecture</span>
+    <h2 class="rv">How it works</h2>
+    <p class="lede rv">One bridge process, two jobs. Your phone never talks to Claude's servers directly; everything runs on your machine, in your repo, with your existing Claude Code plan.</p>
+    <div class="flow rv">
+      <div class="node"><div class="t">📱 Your phone</div><div class="d">any browser, just a link</div></div>
+      <div class="arrow"><div>→</div><small>https · Tailscale Funnel</small></div>
+      <div class="node"><div class="t">🔭 durbin bridge</div><div class="d">on your computer, port 8787</div></div>
+      <div class="arrow"><div>→</div></div>
+      <div class="flow-split">
+        <div class="node"><div class="t">🤖 <code>/__agent</code></div><div class="d">Claude Code via the official Claude Agent SDK</div></div>
+        <div class="node"><div class="t">⚡ everything else</div><div class="d">reverse proxy to your dev server, HMR proxied</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt shot-sec">
+  <div class="wrap">
+    <span class="sec-eyebrow rv">On desktop</span>
+    <h2 class="rv">Side by side on a big screen</h2>
+    <p class="lede rv">The same URL on a laptop shows the Claude Code session next to the live preview. On the phone they become tabs.</p>
+    <div class="shot rv"><img src="screenshot.png" alt="durbin running: Claude Code session on the left, live dev server preview on the right" loading="lazy"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="sec-eyebrow rv">Control</span>
+    <h2 class="rv">Permission modes, per message</h2>
+    <p class="lede rv">The mode button in the composer maps onto Claude Code's permission modes and applies per message: plan one task, auto-run the next, in the same conversation. Clarifying questions always reach you.</p>
+    <div class="modes">
+      <div class="mode-card rv"><div class="name">✋ Manual</div><p>Every tool call, file edits included, pauses the run and asks on your phone.</p></div>
+      <div class="mode-card rv"><div class="name">📝 Plan</div><p>Claude explores but touches nothing, then proposes a plan as a card. "Build it" approves; "Keep planning" sends feedback.</p></div>
+      <div class="mode-card rv"><div class="name">✏️ Edits <small>(default)</small></div><p>File edits auto-approved so work flows; shell commands and everything else still ask first.</p></div>
+      <div class="mode-card rv"><div class="name">⚡ Auto</div><p>Everything runs without asking: builds, git, installs, the lot.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="setup" class="alt">
+  <div class="wrap">
+    <span class="sec-eyebrow rv">Getting started</span>
+    <h2 class="rv">Set up in three steps</h2>
+    <p class="lede rv">Two one-time prerequisites: Node 20+ with a <a href="https://claude.com/claude-code">Claude Code</a> login, and <a href="https://tailscale.com/download">Tailscale</a>, which gives you a stable HTTPS URL from anywhere, for free, with no server to run.</p>
+    <div class="steps">
+      <div class="step rv"><div class="n">1</div><h3>Install once</h3><p><code>npm install -g durbin</code></p></div>
+      <div class="step rv"><div class="n">2</div><h3>Run in any project</h3><p><code>cd your-project</code> then <code>durbin</code>. It starts the bridge, turns on Tailscale Funnel by itself, and prints a QR code with the login token baked in.</p></div>
+      <div class="step rv"><div class="n">3</div><h3>Scan with your phone</h3><p>Open the QR with your camera, bookmark it, add to home screen. The token sets a year-long cookie, so you never type the URL again.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="sec-eyebrow rv">Comparison</span>
+    <h2 class="rv">durbin vs. Claude Code Remote Control</h2>
+    <p class="lede rv">Claude Code's official <a href="https://code.claude.com/docs/en/remote-control">Remote Control</a> also drives a local session from your phone. They compose nicely; here's where they differ.</p>
+    <div class="tbl-scroll rv">
+      <table>
+        <thead><tr><th></th><th>🔭 durbin</th><th>Remote Control</th></tr></thead>
+        <tbody>
+          <tr><td>Claude runs on your machine, in your repo</td><td class="yes">✅</td><td class="yes">✅</td></tr>
+          <tr><td>Live preview of your dev server, hot reload included</td><td class="yes">✅</td><td class="no">❌</td></tr>
+          <tr><td>Agent and preview share one URL</td><td class="yes">✅</td><td class="no">❌</td></tr>
+          <tr><td>Works in any browser with just a link, no Claude login on the phone</td><td class="yes">✅</td><td class="no">❌</td></tr>
+          <tr><td>Always-on: runs as a service, nothing to keep alive or re-pair</td><td class="yes">✅</td><td class="no">❌</td></tr>
+          <tr><td>One-tap dev server restart after a reboot</td><td class="yes">✅</td><td class="no">❌</td></tr>
+          <tr><td>Open source, self-hosted, you own the transport</td><td class="yes">✅</td><td class="no">❌</td></tr>
+          <tr><td>Polished native app experience</td><td class="no">❌</td><td class="yes">✅</td></tr>
+          <tr><td>Official Anthropic support</td><td class="no">❌</td><td class="yes">✅</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="wrap">
+    <h2 class="rv">See your project from far away.</h2>
+    <p class="lede rv" style="margin-bottom:32px;">Free, open source, MIT licensed. Your machine, your repo, your tunnel.</p>
+    <div class="cta-row rv">
+      <button class="install" onclick="navigator.clipboard.writeText('npm install -g durbin');this.querySelector('.copied').style.display='inline';setTimeout(()=>this.querySelector('.copied').style.display='none',1500)">
+        <span class="dollar">$</span> npm install -g durbin <span class="copied">copied!</span>
+      </button>
+      <a class="cta" href="https://github.com/PragyanSubedi/durbin">Star on GitHub</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="brand">🔭 <span>durbin</span></div>
+  <p>MIT License · <a href="https://github.com/PragyanSubedi/durbin">GitHub</a> · Built on the <a href="https://code.claude.com/docs/en/agent-sdk/overview">Claude Agent SDK</a> &amp; <a href="https://tailscale.com/kb/1223/funnel">Tailscale Funnel</a></p>
+</footer>
+
+<script>
+  document.documentElement.classList.add('js');
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.rv').forEach((el, i) => { el.style.transitionDelay = `${(i % 6) * 55}ms`; io.observe(el); });
+
+  // ----- interactive phone demo -----
+  const $ = (id) => document.getElementById(id);
+  const chat = $('chat');
+  const scrollChat = () => { chat.scrollTop = chat.scrollHeight; };
+
+  function el(cls, html) {
+    const d = document.createElement('div');
+    d.className = cls;
+    d.innerHTML = html;
+    chat.appendChild(d);
+    scrollChat();
+    return d;
+  }
+
+  function stream(text, done) {
+    const t = el('typing', '<i></i><i></i><i></i>');
+    setTimeout(() => {
+      t.remove();
+      const m = el('msg-claude', '');
+      let i = 0;
+      const tick = setInterval(() => {
+        i += 2;
+        m.innerHTML = text.slice(0, i);
+        scrollChat();
+        if (i >= text.length) { clearInterval(tick); if (done) done(); }
+      }, 16);
+    }, 650);
+  }
+
+  // tabs
+  function showPreview(on) {
+    $('tabPreview').classList.toggle('on', on);
+    $('tabAgent').classList.toggle('on', !on);
+    $('previewView').classList.toggle('on', on);
+    $('agentView').classList.toggle('off', on);
+    if (on) $('tabPreview').classList.remove('nudge');
+  }
+  $('tabAgent').addEventListener('click', () => showPreview(false));
+  $('tabPreview').addEventListener('click', () => showPreview(true));
+
+  // permission card
+  function settleCard(allowed) {
+    $('pcard').outerHTML = `<div class="receipt ${allowed ? 'ok' : ''}">${allowed ? '⌁ allowed · npm run build' : '✗ denied · npm run build'}</div>`;
+    if (allowed) {
+      stream('Build passed clean. Open the <b>Preview</b> tab to see the pricing page live.', () => {
+        $('tabPreview').classList.add('nudge');
+      });
+    } else {
+      stream('No problem, skipped the build. The edits are still live in the preview.');
+    }
+  }
+  $('btnAllow').addEventListener('click', () => settleCard(true));
+  $('btnDeny').addEventListener('click', () => settleCard(false));
+
+  // composer
+  const replies = [
+    'That\'s the demo talking. Install durbin and this exact chat becomes a real Claude Code session in your repo.',
+    'In the real app I\'d run that in your project and stream the output back here, token by token.',
+    'I\'d love to, but I\'m a landing page. <b>npm install -g durbin</b> gets you the real me.',
+  ];
+  let r = 0;
+  $('composer').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const v = $('say').value.trim();
+    if (!v) return;
+    $('say').value = '';
+    const esc = v.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    el('msg-user', '<span class="mic">🎙</span>' + esc);
+    stream(replies[r++ % replies.length]);
+  });
+</script>
+
+</body>
+</html>
