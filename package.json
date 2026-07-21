@@ -1,6 +1,6 @@
 {
   "name": "durbin",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Dictate to Claude Code from your phone and watch your dev server's live preview. One URL, from anywhere.",
   "type": "module",
   "bin": {
