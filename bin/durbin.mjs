@@ -14,6 +14,7 @@
 
 import http from "node:http";
 import os from "node:os";
+import readline from "node:readline";
 import { spawn, execFile } from "node:child_process";
 import crypto from "node:crypto";
 import fs from "node:fs";
@@ -581,15 +582,18 @@ function startRun(prompt, mode, images) {
 }
 
 // ---------- dev server control ----------
-function devServerUp() {
+function portUp(port) {
   return new Promise((resolve) => {
-    const req = http.get({ host: "127.0.0.1", port: devPort, path: "/", timeout: 1500 }, (res) => {
+    const req = http.get({ host: "127.0.0.1", port, path: "/", timeout: 1500 }, (res) => {
       res.resume();
       resolve(true);
     });
     req.on("error", () => resolve(false));
     req.on("timeout", () => { req.destroy(); resolve(false); });
   });
+}
+function devServerUp() {
+  return portUp(devPort);
 }
 
 let devStarting = false;
@@ -627,9 +631,14 @@ function proxyHttp(req, res) {
     res.end(`<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1">
       <body style="font-family:ui-sans-serif,system-ui,sans-serif;background:#262624;color:#faf9f5;display:grid;place-items:center;min-height:100vh;margin:0">
       <div style="text-align:center;padding:24px"><h2>Dev server is not running</h2>
-      <p style="color:#a5a29a">Start it from the agent page &mdash; this page reloads itself once it answers.</p>
-      <p><a href="/__agent" style="color:#d97757">Open agent</a></p></div>
-      <script>setInterval(() => {
+      <p id="hint" style="color:#a5a29a">Start it from the agent page &mdash; this page reloads itself once it answers.</p>
+      <p id="open"><a href="/__agent" target="_top" style="color:#d97757">Open agent</a></p></div>
+      <script>
+      if (window.top !== window) { // embedded in the agent's preview pane: the agent is already here
+        document.getElementById('open').style.display = 'none';
+        document.getElementById('hint').textContent = 'Start it from the + menu (or ask the agent to) — this page reloads itself once it answers.';
+      }
+      setInterval(() => {
         fetch(location.href, { method: 'HEAD', cache: 'no-store' })
           .then(r => { if (r.status !== 502) location.reload(); })
           .catch(() => {});
@@ -2158,6 +2167,54 @@ Live preview of the site (same login):  https://${host}/`);
     });
   });
 }
+
+// ---------- dev-server port check (startup) ----------
+// If nothing answers on the dev port, ask which port the dev server is on
+// before going up — sniffing common dev ports for a suggestion — and explain
+// how to start one if it simply isn't running yet. The prompt is skipped when
+// the port was forced with --dev-port/env or there's no terminal to ask on.
+const COMMON_DEV_PORTS = [3000, 5173, 4321, 8080, 8000, 4200, 5000, 3001];
+async function resolveDevPort() {
+  if (DEV_PORT_ARG || (await portUp(devPort))) return;
+  let found = 0;
+  for (const p of COMMON_DEV_PORTS) {
+    if (p !== devPort && (await portUp(p))) { found = p; break; }
+  }
+  if (process.stdin.isTTY) {
+    const def = found || devPort;
+    const note = found ? `, but something is answering on ${found}` : "";
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    const answer = await new Promise((resolve) =>
+      rl.question(`No dev server on port ${devPort}${note}. Port to proxy [${def}]: `, resolve));
+    rl.close();
+    const picked = Number(String(answer).trim()) || def;
+    if (picked !== devPort) {
+      devPort = picked;
+      state.devPort = picked;
+      saveState(state);
+    }
+  } else if (found) {
+    console.log(`Note: no dev server on port ${devPort}, but something is answering on ${found}.
+If that's it, restart with --dev-port ${found} or switch ports from the phone UI.`);
+  }
+  if (!(await portUp(devPort))) {
+    console.log(`
+No dev server is running on port ${devPort} yet — the preview will show a
+waiting page until one answers. Start it in another terminal (${DEV_CMD}),
+or from the phone UI's + menu, or just ask the agent to. To change the
+port later, tap the port number in the phone UI's status bar.`);
+  }
+}
+await resolveDevPort();
+
+server.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    console.error(`durbin: port ${PORT} is already in use — another durbin (or something else) is listening there.
+Stop it, or start this one on a different port:  durbin --port <n>`);
+    process.exit(1);
+  }
+  throw err;
+});
 
 server.listen(PORT, "127.0.0.1", () => {
   console.log(`
